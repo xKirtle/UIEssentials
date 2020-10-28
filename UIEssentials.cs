@@ -11,8 +11,7 @@ namespace UIEssentials
 {
     public class UIEssentials : Mod
     {
-        internal static bool debugMode = false;
-        internal static Dictionary<int, List<Recipe>> recipeDictionary;
+        internal static bool debugMode = true;
         internal static ModHotKey ToggleTestMenu;
         public override void Load()
         {
@@ -63,7 +62,7 @@ namespace UIEssentials
     {
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (UIEssentials.ToggleTestMenu.JustPressed)
+            if (UIEssentials.debugMode && UIEssentials.ToggleTestMenu.JustPressed)
             {
                 if (TestMenu.testPanel != null)
                 {

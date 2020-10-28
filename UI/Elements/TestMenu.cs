@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
 using Terraria.UI;
 using Terraria.GameContent.UI.Elements;
 using UIEssentials.UI.Elements;
@@ -28,10 +27,12 @@ namespace UIEssentials.UI
             testPanel.BorderColor = Color.Red;
             testPanel.BackgroundColor = Color.Transparent;
 
-            CustomItemSlot customItemSlot = new CustomItemSlot(itemType: ItemID.AdamantiteSword);
-            testPanel.Append(customItemSlot);
+            CustomUIPanel customUIPanel = new CustomUIPanel();
+            customUIPanel.Width.Set(100f, 0);
+            customUIPanel.Height.Set(100f, 0);
 
-            Instance.Append(testPanel);
+            testPanel.Append(customUIPanel);
+            Instance?.Append(testPanel);
         }
 
         public override void Update(GameTime gameTime)

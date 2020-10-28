@@ -162,7 +162,7 @@ namespace UIEssentials.UI.Elements
         /// <summary>
         /// Sets the ItemSlot background texture.
         /// </summary>
-        /// <param name="texture">A XNA Framework Texture2D object</param>
+        /// <param name="texture">A XNA Framework Texture2D object.</param>
         public void SetTexture(Texture2D texture)
         {
             BackgroundTexture = texture ?? Main.inventoryBack9Texture;
