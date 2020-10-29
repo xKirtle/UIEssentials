@@ -18,6 +18,7 @@ namespace UIEssentials.UI
         {
             Instance = this;
         }
+
         public static void CreateMenuPanel()
         {
             testPanel = new CustomUIPanel();
@@ -26,6 +27,11 @@ namespace UIEssentials.UI
             testPanel.Left.Set(Main.screenWidth / 2 - testPanel.Width.Pixels / 2, 0);
             testPanel.Top.Set(Main.screenHeight / 4 - testPanel.Height.Pixels / 2, 0);
             testPanel.BorderColor = Color.Red;
+
+            image = new CustomUIImage(Main.itemTexture[ItemID.AdamantiteSword], true);
+            image.Width.Set(100f, 0);
+            image.OnMouseDown += (__, _) => Main.NewText("down");
+            testPanel.Append(image);
 
             Instance?.Append(testPanel);
         }

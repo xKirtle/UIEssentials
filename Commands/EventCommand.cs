@@ -12,7 +12,10 @@ namespace UIEssentials.Commands
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
-
+            if (TestMenu.image.IsRendered)
+                TestMenu.image.Hide();
+            else
+                TestMenu.image.Show();
         }
     }
 }

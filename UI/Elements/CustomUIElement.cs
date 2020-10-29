@@ -22,7 +22,7 @@ namespace UIEssentials.UI.Elements
         /// <summary>
         /// Get the curent mouse hovering state.
         /// </summary>
-        new public bool IsMouseHovering { get; private set; }
+        private UIElement _parent;
 
         public override void Update(GameTime gameTime)
         {
@@ -64,93 +64,6 @@ namespace UIEssentials.UI.Elements
         new public delegate void ScrollWheelEvent(UIScrollWheelEvent evt, CustomUIElement listeningElement);
         public delegate void ElementEvent(CustomUIElement affectedElement);
 
-        new public event MouseEvent OnMouseDown;
-        new public event MouseEvent OnMouseUp;
-        new public event MouseEvent OnClick;
-        new public event MouseEvent OnMouseOver;
-        new public event MouseEvent OnMouseOut;
-        new public event MouseEvent OnDoubleClick;
-        new public event ScrollWheelEvent OnScrollWheel;
-
-        new public virtual void MouseDown(UIMouseEvent evt)
-        {
-            if (!IsRendered) return;
-
-            OnMouseDown?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.MouseDown(evt);
-            }
-        }
-
-        new public virtual void MouseUp(UIMouseEvent evt)
-        {
-            if (!IsRendered) return;
-
-            OnMouseUp?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.MouseUp(evt);
-            }
-        }
-
-        new public virtual void MouseOver(UIMouseEvent evt)
-        {
-            IsMouseHovering = true;
-            if (!IsRendered) return;
-
-            OnMouseOver?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.MouseOver(evt);
-            }
-        }
-
-        new public virtual void MouseOut(UIMouseEvent evt)
-        {
-            IsMouseHovering = false;
-            if (!IsRendered) return;
-
-            OnMouseOut?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.MouseOut(evt);
-            }
-        }
-
-        new public virtual void Click(UIMouseEvent evt)
-        {
-            if (!IsRendered) return;
-
-            OnClick?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.Click(evt);
-            }
-        }
-
-        new public virtual void DoubleClick(UIMouseEvent evt)
-        {
-            if (!IsRendered) return;
-
-            OnDoubleClick?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.DoubleClick(evt);
-            }
-        }
-
-        new public virtual void ScrollWheel(UIScrollWheelEvent evt)
-        {
-            if (!IsRendered) return;
-
-            OnScrollWheel?.Invoke(evt, this);
-            if (Parent != null)
-            {
-                Parent.ScrollWheel(evt);
-            }
-        }
-
 
         public event ElementEvent OnShow;
         public event ElementEvent OnHide;
@@ -161,6 +74,8 @@ namespace UIEssentials.UI.Elements
         public virtual void Show()
         {
             IsRendered = true;
+            _parent?.Append(this);
+
             OnShow?.Invoke(this);
         }
 
@@ -170,6 +85,9 @@ namespace UIEssentials.UI.Elements
         public virtual void Hide()
         {
             IsRendered = false;
+            _parent = Parent;
+            Remove();
+
             OnHide?.Invoke(this);
         }
 
