@@ -28,34 +28,31 @@ namespace UIEssentials.UI.Elements
         /// <summary>
         /// Called when an item is equipped in the ItemSlot.
         /// </summary>
-        public event CustomEventHandler OnItemEquipped;
+        public event ElementEvent OnItemEquipped;
         /// <summary>
         /// Called when an item is removed from the ItemSlot.
         /// </summary>
-        public event CustomEventHandler OnItemRemoved;
+        public event ElementEvent OnItemRemoved;
 
         //TODO: Implement mouse hover stats display like vanilla itemSlot?
 
         /// <summary></summary>
-        /// <param name="texture">ItemSlot's background texture</param>
         /// <param name="scale">ItemSlot's drawing scale</param>
         /// <param name="itemType">ItemSlot's Item type</param>
-        /// <param name="opacity">ItemSlots's opactiy level (higher value, higher opacity)</param>
+        /// <param name="opacity">ItemSlots's opactiy level. (higher value, higher opacity)</param>
         /// <param name="displayOnly">Whether the ItemSlot is interactable or not. If true, the ItemSlot will not be interactable.</param>
         /// <param name="isRendered">Whether the ItemSlot is rendered or not.</param>
-        public CustomItemSlot(Texture2D texture = null, float scale = 1f, int itemType = 0, float opacity = 1f, bool displayOnly = false, bool isRendered = true)
+        public CustomItemSlot(int itemType = 0, float scale = 1f, float opacity = 1f, bool displayOnly = false, bool isRendered = true)
         {
-            SetTexture(texture ?? Main.inventoryBack9Texture);
-            SetScale(scale);
+            BackgroundTexture = Main.inventoryBack9Texture;
+
             Item = new Item().SetItemType(itemType);
+            SetScale(scale);
             SetOpacity(opacity);
             DisplayOnly = displayOnly;
 
             if (isRendered) Show();
             else Hide();
-
-            Width.Set(BackgroundTexture.Width * Scale, 0);
-            Height.Set(BackgroundTexture.Height * Scale, 0);
         }
 
         private void SubscribeMouseDown() => OnMouseDown += CustomItemSlot_OnMouseDown;
@@ -106,11 +103,9 @@ namespace UIEssentials.UI.Elements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (!IsRendered) return;
-
             //Background of ItemSlot
             Vector2 position = GetDimensions().ToRectangle().TopLeft();
-            spriteBatch.Draw(BackgroundTexture, position, BackgroundTexture.Bounds, new Color(255, 255, 255, Opacity), 0f, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(BackgroundTexture, position, BackgroundTexture.Bounds, Color.White * Opacity, 0f, Vector2.Zero, Scale, SpriteEffects.None, 0f);
 
             //Maybe I need to use vanilla's way to get the texture to render animated items?
             Texture2D itemInSlot = Main.itemTexture[Item.type];
@@ -129,7 +124,7 @@ namespace UIEssentials.UI.Elements
             origin -= new Vector2(itemInSlot.Width >= 64 ? -3 : 0, itemInSlot.Height >= 64 ? -3 : 0);
 
             //Drawing item's texture inside the ItemSlot
-            spriteBatch.Draw(itemInSlot, position, rect, new Color(255, 255, 255, 1f), 0f, origin, itemScale * Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(itemInSlot, position, rect, Color.White * Opacity, 0f, origin, itemScale * Scale, SpriteEffects.None, 0f);
         }
 
         public override void Show()
@@ -144,17 +139,24 @@ namespace UIEssentials.UI.Elements
             SetDisplayOnly(true);
         }
 
+        public override void SetScale(float scale)
+        {
+            base.SetScale(scale);
+            Width.Set(BackgroundTexture.Width * Scale, 0);
+            Height.Set(BackgroundTexture.Height * Scale, 0);
+        }
+
         //Custom events
         private void OnItemEquippedEvent()
         {
             if (!Item.IsAir)
-                OnItemEquipped?.Invoke(this, EventArgs.Empty);
+                OnItemEquipped?.Invoke(this);
         }
 
         private void OnItemRemovedEvent()
         {
             if (Item.IsAir)
-                OnItemRemoved?.Invoke(this, EventArgs.Empty);
+                OnItemRemoved?.Invoke(this);
         }
 
         //GET/SET METHODS
@@ -163,7 +165,7 @@ namespace UIEssentials.UI.Elements
         /// Sets the ItemSlot background texture.
         /// </summary>
         /// <param name="texture">A XNA Framework Texture2D object.</param>
-        public void SetTexture(Texture2D texture)
+        public void SetBackgroundTexture(Texture2D texture)
         {
             BackgroundTexture = texture ?? Main.inventoryBack9Texture;
         }
