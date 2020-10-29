@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Terraria;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -18,38 +19,33 @@ namespace UIEssentials.UI.Elements
         /// </summary>
         public Texture2D BorderTexture { get; private set; }
         /// <summary>
-        /// Get the current background color.
+        /// Get/Set the current background color.
         /// </summary>
-        public Color BackgroundColor { get; private set; }
+        public Color BackgroundColor { get; set; }
         /// <summary>
-        /// Get the current border color.
+        /// Get/Set the current border color.
         /// </summary>
-        public Color BorderColor { get; private set; }
+        public Color BorderColor { get; set; }
 
         /// <summary></summary>
+        /// <param name="scale">UIPanel's drawing scale</param>
+        /// <param name="opacity">UIPanel's opacity. (higher value, higher opacity)</param>
+        /// <param name="isRendered">Whether the UIPanel is rendered or not.</param>
         /// <param name="backgroundColor">UIPanel's background color.</param>
         /// <param name="borderColor">UIPanel's border color.</param>
-        /// <param name="scale">UIPanel's drawing scale</param>
-        /// <param name="opacity">UIPanel's opacity (higher value, higher opacity)</param>
-        /// <param name="isRendered">Whether the ItemSlot is rendered or not.</param>
-        /// <param name="backgroundTexture">UIPanel's background texture (may break its appearance)</param>
-        /// <param name="borderTexture">UIPanel's border texture (may break its appearance)</param>
-        public CustomUIPanel(Color backgroundColor = default, Color borderColor = default, float scale = 1f, float opacity = 1f, bool isRendered = true, Texture2D backgroundTexture = null, Texture2D borderTexture = null)
+        public CustomUIPanel(float scale = 1f, float opacity = 1f, bool isRendered = true)
         {
             SetScale(scale);
             SetOpacity(opacity);
-            BackgroundColor = backgroundColor == default ? new Color(63, 82, 151) * Opacity : backgroundColor * Opacity;
-            BorderColor = borderColor == default ? Color.Black * Opacity : borderColor * Opacity;
-            SetPadding(0);
 
             if (isRendered) Show();
             else Hide();
 
-            BorderTexture = borderTexture ?? ModContent.GetTexture("Terraria/UI/PanelBorder");
-            BackgroundTexture = backgroundTexture ?? ModContent.GetTexture("Terraria/UI/PanelBackground");
-
-            Width.Set((BackgroundTexture.Width + BorderTexture.Width) * Scale, 0);
-            Height.Set((BackgroundTexture.Height + BorderTexture.Height) * Scale, 0);
+            SetBackgroundTexture(null);
+            SetBorderTexture(null);
+            BackgroundColor = new Color(63, 82, 151);
+            BorderColor = Color.Black;
+            SetPadding(0);
         }
 
         private void DrawPanel(SpriteBatch spriteBatch, Texture2D texture, Color color)
@@ -76,10 +72,21 @@ namespace UIEssentials.UI.Elements
             if (!IsRendered) return;
 
             if (BackgroundTexture != null)
-                DrawPanel(spriteBatch, BackgroundTexture, BackgroundColor);
+                DrawPanel(spriteBatch, BackgroundTexture, BackgroundColor * Opacity);
 
             if (BorderTexture != null)
-                DrawPanel(spriteBatch, BorderTexture, BorderColor);
+                DrawPanel(spriteBatch, BorderTexture, BorderColor * Opacity);
+        }
+
+        public override void SetScale(float scale)
+        {
+            base.SetScale(scale);
+
+            if (BackgroundTexture != null && BorderTexture != null)
+            {
+                Width.Set((BackgroundTexture.Width + BorderTexture.Width) * Scale, 0);
+                Height.Set((BackgroundTexture.Height + BorderTexture.Height) * Scale, 0);
+            }
         }
 
         //GET/SET METHODS
@@ -100,24 +107,6 @@ namespace UIEssentials.UI.Elements
         public void SetBorderTexture(Texture2D texture)
         {
             BorderTexture = texture ?? ModContent.GetTexture("Terraria/UI/PanelBorder");
-        }
-
-        /// <summary>
-        /// Sets the UIPanel background color.
-        /// </summary>
-        /// <param name="color">A XNA Framework Color object.</param>
-        public void SetBackgroundColor(Color color)
-        {
-            BackgroundColor = color == default ? new Color(63, 82, 151) * Opacity : color * Opacity; ;
-        }
-
-        /// <summary>
-        /// Sets the UIPanel border color.
-        /// </summary>
-        /// <param name="color">A XNA Framework Color object</param>
-        public void SetBorderColor(Color color)
-        {
-            BorderColor = color == default ? Color.Black * Opacity : color * Opacity;
         }
     }
 }
