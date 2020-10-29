@@ -21,14 +21,14 @@ namespace UIEssentials
             {
                 if (!debugMode) return;
 
-                UserInterface = new UserInterface();
+                UserInterface = new CustomUserInterface();
                 TestMenu = new TestMenu();
                 TestMenu.Activate();
                 UserInterface.SetState(TestMenu);
             }
         }
 
-        internal static UserInterface UserInterface;
+        internal static CustomUserInterface UserInterface;
         internal static TestMenu TestMenu;
         private GameTime _lastUpdateUiGameTime;
         public override void UpdateUI(GameTime gameTime)
