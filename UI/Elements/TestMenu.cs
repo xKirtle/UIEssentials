@@ -5,11 +5,12 @@ using Terraria.GameContent.UI.Elements;
 using UIEssentials.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using UIEssentials.Utilities;
 
 namespace UIEssentials.UI
 {
-    class TestMenu : UIState
+    internal class TestMenu : UIState
     {
         public static TestMenu Instance;
         public static CustomUIPanel testPanel;
@@ -28,17 +29,7 @@ namespace UIEssentials.UI
             testPanel.Top.Set(Main.screenHeight / 4 - testPanel.Height.Pixels / 2, 0);
             testPanel.BorderColor = Color.Red;
 
-            image = new CustomUIImage(Main.itemTexture[ItemID.AdamantiteSword], true);
-            image.Width.Set(100f, 0);
-            image.OnMouseDown += (__, _) => Main.NewText("down");
-            testPanel.Append(image);
-
             Instance?.Append(testPanel);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
         }
     }
 }

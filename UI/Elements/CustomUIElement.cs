@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
@@ -11,31 +12,40 @@ namespace UIEssentials.UI.Elements
         /// Get the current drawing scale.
         /// </summary>
         public float Scale { get; private set; }
+
         /// <summary>
         /// Get the current opacity.
         /// </summary>
         public float Opacity { get; private set; }
+
         /// <summary>
-        /// Get the current render state.
+        /// Get the currect dimensions of the UI Element.
         /// </summary>
-        public bool IsRendered { get; private set; }
+        public Vector2 Size { get; private set; }
+
         /// <summary>
-        /// Get the curent mouse hovering state.
+        /// Get the current visibility state.
         /// </summary>
+        public bool Visible { get; private set; }
+
         private UIElement _parent;
+        private bool _initialized = false;
+
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
+            //TODO: Fix Size and Scale issues
+            if (!_initialized)
+            {
+                SetSize(Width.Pixels, Height.Pixels);
+                _initialized = true;
+            }
+            SetSize(Size);
+
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!IsRendered) return;
-            base.Draw(spriteBatch);
         }
 
         //GET/SET METHODS
@@ -47,23 +57,44 @@ namespace UIEssentials.UI.Elements
         public virtual void SetScale(float scale)
         {
             Scale = scale;
+            SetSize(Size);
         }
 
         /// <summary>
         /// Sets the UIElement drawing scale.
         /// </summary>
-        /// <param name="scale">Negative values will mirror the UIElement drawing by the x and y vertices</param>
+        /// <param name="opacity">Negative values will mirror the UIElement drawing by the x and y vertices</param>
         public virtual void SetOpacity(float opacity)
         {
             Opacity = opacity;
         }
 
-        #region Events
-        //Hiding vanilla delegates to return a CustomUIElement rather than a UIElement
-        new public delegate void MouseEvent(UIMouseEvent evt, CustomUIElement listeningElement);
-        new public delegate void ScrollWheelEvent(UIScrollWheelEvent evt, CustomUIElement listeningElement);
-        public delegate void ElementEvent(CustomUIElement affectedElement);
+        /// <summary>
+        /// Sets the UIElement width/height dimensions.
+        /// </summary>
+        /// <param name="width">Width in pixels</param>
+        /// <param name="height">Height in pixels</param>
+        public virtual void SetSize(float width, float height)
+        {
+            Size = new Vector2(width, height);
+            Width.Set(width * Scale, 0);
+            Height.Set(height * Scale, 0);
+        }
 
+        /// <summary>
+        /// Sets the UIElement width/height dimensions.
+        /// </summary>
+        /// <param name="size">A Vector2 where x: width and y: height.</param>
+        public virtual void SetSize(Vector2 size)
+        {
+            Size = size;
+            Width.Set(size.X * Scale, 0);
+            Height.Set(size.Y * Scale, 0);
+        }
+
+        #region Events
+
+        public delegate void ElementEvent(CustomUIElement affectedElement);
 
         public event ElementEvent OnShow;
         public event ElementEvent OnHide;
@@ -73,7 +104,7 @@ namespace UIEssentials.UI.Elements
         /// </summary>
         public virtual void Show()
         {
-            IsRendered = true;
+            Visible = true;
             _parent?.Append(this);
 
             OnShow?.Invoke(this);
@@ -84,7 +115,7 @@ namespace UIEssentials.UI.Elements
         /// </summary>
         public virtual void Hide()
         {
-            IsRendered = false;
+            Visible = false;
             _parent = Parent;
             Remove();
 

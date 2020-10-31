@@ -6,10 +6,11 @@ using Terraria.UI;
 
 namespace UIEssentials.UI.Elements
 {
-    class CustomUIPanel : CustomUIElement
+    public class CustomUIPanel : CustomUIElement
     {
-        private readonly int _cornerSize = 12;
-        private readonly int _barSize = 4;
+        private const int CornerSize = 12;
+        private const int BarSize = 4;
+
         /// <summary>
         /// Get the current background texture.
         /// </summary>
@@ -30,16 +31,10 @@ namespace UIEssentials.UI.Elements
         /// <summary></summary>
         /// <param name="scale">UIPanel's drawing scale</param>
         /// <param name="opacity">UIPanel's opacity. (higher value, higher opacity)</param>
-        /// <param name="isRendered">Whether the UIPanel is rendered or not.</param>
-        /// <param name="backgroundColor">UIPanel's background color.</param>
-        /// <param name="borderColor">UIPanel's border color.</param>
-        public CustomUIPanel(float scale = 1f, float opacity = 1f, bool isRendered = true)
+        public CustomUIPanel(float scale = 1f, float opacity = 1f)
         {
             SetScale(scale);
             SetOpacity(opacity);
-
-            if (isRendered) Show();
-            else Hide();
 
             SetBackgroundTexture(null);
             SetBorderTexture(null);
@@ -53,24 +48,22 @@ namespace UIEssentials.UI.Elements
             //Vanilla code
             CalculatedStyle dimensions = GetDimensions();
             Point point = new Point((int)dimensions.X, (int)dimensions.Y);
-            Point point2 = new Point(point.X + (int)dimensions.Width - _cornerSize, point.Y + (int)dimensions.Height - _cornerSize);
-            int width = point2.X - point.X - _cornerSize;
-            int height = point2.Y - point.Y - _cornerSize;
-            spriteBatch.Draw(texture, new Rectangle(point.X, point.Y, _cornerSize, _cornerSize), new Rectangle?(new Rectangle(0, 0, _cornerSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y, _cornerSize, _cornerSize), new Rectangle?(new Rectangle(_cornerSize + _barSize, 0, _cornerSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point.X, point2.Y, _cornerSize, _cornerSize), new Rectangle?(new Rectangle(0, _cornerSize + _barSize, _cornerSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point2.X, point2.Y, _cornerSize, _cornerSize), new Rectangle?(new Rectangle(_cornerSize + _barSize, _cornerSize + _barSize, _cornerSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point.Y, width, _cornerSize), new Rectangle?(new Rectangle(_cornerSize, 0, _barSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point2.Y, width, _cornerSize), new Rectangle?(new Rectangle(_cornerSize, _cornerSize + _barSize, _barSize, _cornerSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point.X, point.Y + _cornerSize, _cornerSize, height), new Rectangle?(new Rectangle(0, _cornerSize, _cornerSize, _barSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y + _cornerSize, _cornerSize, height), new Rectangle?(new Rectangle(_cornerSize + _barSize, _cornerSize, _cornerSize, _barSize)), color);
-            spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point.Y + _cornerSize, width, height), new Rectangle?(new Rectangle(_cornerSize, _cornerSize, _barSize, _barSize)), color);
+            Point point2 = new Point(point.X + (int)dimensions.Width - CornerSize, point.Y + (int)dimensions.Height - CornerSize);
+            int width = point2.X - point.X - CornerSize;
+            int height = point2.Y - point.Y - CornerSize;
+            spriteBatch.Draw(texture, new Rectangle(point.X, point.Y, CornerSize, CornerSize), new Rectangle?(new Rectangle(0, 0, CornerSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y, CornerSize, CornerSize), new Rectangle?(new Rectangle(CornerSize + BarSize, 0, CornerSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point.X, point2.Y, CornerSize, CornerSize), new Rectangle?(new Rectangle(0, CornerSize + BarSize, CornerSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point2.X, point2.Y, CornerSize, CornerSize), new Rectangle?(new Rectangle(CornerSize + BarSize, CornerSize + BarSize, CornerSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point.X + CornerSize, point.Y, width, CornerSize), new Rectangle?(new Rectangle(CornerSize, 0, BarSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point.X + CornerSize, point2.Y, width, CornerSize), new Rectangle?(new Rectangle(CornerSize, CornerSize + BarSize, BarSize, CornerSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point.X, point.Y + CornerSize, CornerSize, height), new Rectangle?(new Rectangle(0, CornerSize, CornerSize, BarSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y + CornerSize, CornerSize, height), new Rectangle?(new Rectangle(CornerSize + BarSize, CornerSize, CornerSize, BarSize)), color);
+            spriteBatch.Draw(texture, new Rectangle(point.X + CornerSize, point.Y + CornerSize, width, height), new Rectangle?(new Rectangle(CornerSize, CornerSize, BarSize, BarSize)), color);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (!IsRendered) return;
-
             if (BackgroundTexture != null)
                 DrawPanel(spriteBatch, BackgroundTexture, BackgroundColor * Opacity);
 
@@ -78,23 +71,12 @@ namespace UIEssentials.UI.Elements
                 DrawPanel(spriteBatch, BorderTexture, BorderColor * Opacity);
         }
 
-        public override void SetScale(float scale)
-        {
-            base.SetScale(scale);
-
-            if (BackgroundTexture != null && BorderTexture != null)
-            {
-                Width.Set((BackgroundTexture.Width + BorderTexture.Width) * Scale, 0);
-                Height.Set((BackgroundTexture.Height + BorderTexture.Height) * Scale, 0);
-            }
-        }
-
         //GET/SET METHODS
 
         /// <summary>
         /// Sets the UIPanel background texture.
         /// </summary>
-        /// <param name="texture">A XNA Framework Texture2D object<./param>
+        /// <param name="texture">A XNA Framework Texture2D object.</param>
         public void SetBackgroundTexture(Texture2D texture)
         {
             BackgroundTexture = texture ?? ModContent.GetTexture("Terraria/UI/PanelBackground");

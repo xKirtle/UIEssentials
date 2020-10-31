@@ -41,8 +41,7 @@ namespace UIEssentials.UI.Elements
         /// <param name="itemType">ItemSlot's Item type</param>
         /// <param name="opacity">ItemSlots's opactiy level. (higher value, higher opacity)</param>
         /// <param name="displayOnly">Whether the ItemSlot is interactable or not. If true, the ItemSlot will not be interactable.</param>
-        /// <param name="isRendered">Whether the ItemSlot is rendered or not.</param>
-        public CustomItemSlot(int itemType = 0, float scale = 1f, float opacity = 1f, bool displayOnly = false, bool isRendered = true)
+        public CustomItemSlot(int itemType = 0, float scale = 1f, float opacity = 1f, bool displayOnly = false)
         {
             BackgroundTexture = Main.inventoryBack9Texture;
 
@@ -50,9 +49,6 @@ namespace UIEssentials.UI.Elements
             SetScale(scale);
             SetOpacity(opacity);
             DisplayOnly = displayOnly;
-
-            if (isRendered) Show();
-            else Hide();
         }
 
         private void SubscribeMouseDown() => OnMouseDown += CustomItemSlot_OnMouseDown;
@@ -125,18 +121,6 @@ namespace UIEssentials.UI.Elements
 
             //Drawing item's texture inside the ItemSlot
             spriteBatch.Draw(itemInSlot, position, rect, Color.White * Opacity, 0f, origin, itemScale * Scale, SpriteEffects.None, 0f);
-        }
-
-        public override void Show()
-        {
-            base.Show();
-            SetDisplayOnly(false);
-        }
-
-        public override void Hide()
-        {
-            base.Hide();
-            SetDisplayOnly(true);
         }
 
         public override void SetScale(float scale)

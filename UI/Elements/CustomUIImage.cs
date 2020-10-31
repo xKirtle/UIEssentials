@@ -4,7 +4,7 @@ using Terraria;
 
 namespace UIEssentials.UI.Elements
 {
-    class CustomUIImage : CustomUIElement
+    public class CustomUIImage : CustomUIElement
     {
         /// <summary>
         /// Get the current image texture.
@@ -35,34 +35,29 @@ namespace UIEssentials.UI.Elements
         /// <param name="texture">UIImage's image texture.</param>
         /// <param name="scale">UIImage's drawing scale.</param>
         /// <param name="opacity">UIImage's opacity. (higher value, higher opacity)</param>
-        /// <param name="isRendered">Whether the UIImage is rendered or not.</param>
         /// <param name="imageRotation">UIImage's image rotation.</param>
         /// <param name="overlayColor">UIImage's color rendered above the image texture. (default is transparent)</param>
-        public CustomUIImage(Texture2D texture, float scale = 1f, float opacity = 1f, bool isRendered = true, float imageRotation = 0f, Color overlayColor = default)
+        public CustomUIImage(Texture2D texture, float scale = 1f, float opacity = 1f, float imageRotation = 0f, Color overlayColor = default)
         {
-            Initialize(texture, scale, opacity, isRendered, imageRotation, false, overlayColor);
+            Initialize(texture, scale, opacity, imageRotation, false, overlayColor);
         }
 
         /// <summary></summary>
         /// <param name="texture">UIImage's image texture.</param>
         /// <param name="scaleToFit">Whether the UIImage image is scaled to fit the current UIElement dimensions or not.</param>
         /// <param name="opacity">UIImage's opacity. (higher value, higher opacity)</param>
-        /// <param name="isRendered">Whether the UIImage is rendered or not.</param>
         /// <param name="imageRotation">UIImage's image rotation.</param>
         /// <param name="overlayColor">UIImage's color rendered above the image texture. (default is transparent)</param>
-        public CustomUIImage(Texture2D texture, bool scaleToFit = false, float opacity = 1f, bool isRendered = true, float imageRotation = 0f, Color overlayColor = default)
+        public CustomUIImage(Texture2D texture, bool scaleToFit = false, float opacity = 1f, float imageRotation = 0f, Color overlayColor = default)
         {
-            Initialize(texture, 1f, opacity, isRendered, imageRotation, scaleToFit, overlayColor);
+            Initialize(texture, 1f, opacity, imageRotation, scaleToFit, overlayColor);
         }
 
-        private void Initialize(Texture2D texture, float scale = 1f, float opacity = 1f, bool isRendered = true, float imageRotation = 0f, bool scaleToFit = false, Color overlayColor = default)
+        private void Initialize(Texture2D texture, float scale = 1f, float opacity = 1f, float imageRotation = 0f, bool scaleToFit = false, Color overlayColor = default)
         {
             SetImage(texture);
             SetScale(scale);
             SetOpacity(opacity);
-
-            if (isRendered) Show();
-            else Hide();
 
             ImageRotation = imageRotation;
             ScaleToFit = scaleToFit;

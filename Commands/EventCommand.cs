@@ -6,16 +6,15 @@ namespace UIEssentials.Commands
 {
     class EventCommand : ModCommand
     {
-        public override string Command => "event";
+        public override string Command => "x";
         public override string Description => "Plays a random test event";
         public override CommandType Type => CommandType.Chat;
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
-            if (TestMenu.image.IsRendered)
-                TestMenu.image.Hide();
-            else
-                TestMenu.image.Show();
+            Main.NewText("Before: " + TestMenu.testPanel.Size);
+            TestMenu.testPanel.SetScale(TestMenu.testPanel.Scale + 0.25f);
+            Main.NewText("After: " + TestMenu.testPanel.Size);
         }
     }
 }
